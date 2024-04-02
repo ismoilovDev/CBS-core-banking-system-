@@ -20,11 +20,10 @@ import { CardWrapper } from "@/components/auth/card-wrapper"
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-// import { login } from "@/actions/login";
+import { login } from "@/actions/login";
 
 export const LoginForm = () => {
    const searchParams = useSearchParams();
-   const callbackUrl = searchParams.get("callbackUrl");
    const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with different provider!"
       : "";
@@ -44,37 +43,32 @@ export const LoginForm = () => {
 
    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
       console.log(values)
-      // setError("");
-      // setSuccess("");
+      setError("");
+      setSuccess("");
 
-      // startTransition(() => {
-      //    login(values, callbackUrl)
-      //       .then((data) => {
-      //          if (data?.error) {
-      //             form.reset();
-      //             setError(data.error);
-      //          }
+      startTransition(() => {
+         login(values)
+            .then((data) => {
+               if (data?.error) {
+                  form.reset();
+                  setError(data.error);
+               }
 
-      //          if (data?.success) {
-      //             form.reset();
-      //             setSuccess(data.success);
-      //          }
+               if (data?.success) {
+                  form.reset();
+                  setSuccess(data.success);
+               }
 
-      //          if (data?.twoFactor) {
-      //             setShowTwoFactor(true);
-      //          }
-      //       })
-      //       .catch(() => setError("Something went wrong"));
-      // });
+               // if (data?.twoFactor) {
+               //    setShowTwoFactor(true);
+               // }
+            })
+            .catch(() => setError("Something went wrong"));
+      });
    };
 
    return (
-      <CardWrapper
-         headerLabel="Welcome back"
-         backButtonLabel="Don't have an account?"
-         backButtonHref="/auth/register"
-         showSocial
-      >
+      <CardWrapper>
          <Form {...form}>
             <form
                onSubmit={form.handleSubmit(onSubmit)}
@@ -141,7 +135,7 @@ export const LoginForm = () => {
                                     className="px-0 font-normal"
                                  >
                                     <Link href="/auth/reset">
-                                       Forgot password?
+                                       Parol esdan chiqdimi?
                                     </Link>
                                  </Button>
                                  <FormMessage />
